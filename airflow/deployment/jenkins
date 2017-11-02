@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "Pushing prod_dags/ to S3"
+aws s3 sync ./prod_dags s3://airflow-dags/ --delete --include "*.py" --exclude "*"

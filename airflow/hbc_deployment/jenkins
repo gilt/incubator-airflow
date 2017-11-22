@@ -1,18 +1,21 @@
 #!/bin/bash
-echo "Adding aws credentials"
+echo "Downloading aws credentials"
 /web/dw-tools/bin/decrypt-download-secret \
     -f ./airflow/hbc_deployment/aws_credentials \
     -s airflow/.credentials \
     -v yes
 
+echo "Downloading airflow config"
+aws --region us-east-1 s3 cp s3://gilt-data-assets/airflow/airflow.cfg ./airflow/hbc_deployment/airflow.cfg
+
 echo "Adding execute permission to scripts"
 chmod -R 750 ./scripts/
 
 echo "Building / Pushing Airflow image"
-./ecs/build_push_image.sh
+./scripts/deployment/ecs/build_push_image.sh
 
 echo "Registering new task definitions"
-# ./ecs/register_task_definitions.sh
+# ./scripts/deployment/ecs/register_task_definitions.sh
 
 echo "Updating the services"
-# ./ecs/update_services.sh
+# ./scripts/deployment/ecs/update_services.sh

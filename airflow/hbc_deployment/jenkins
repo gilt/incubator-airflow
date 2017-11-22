@@ -20,7 +20,7 @@ echo "Building / Pushing Airflow image"
 ./scripts/deployment/ecs/build_push_image.sh
 
 echo "Registering new task definitions"
-# ./scripts/deployment/ecs/register_task_definitions.sh
+./scripts/deployment/ecs/register_task_definitions.sh
 
 echo "Updating the services"
-# ./scripts/deployment/ecs/update_services.sh
+./scripts/deployment/ecs/update_services.sh

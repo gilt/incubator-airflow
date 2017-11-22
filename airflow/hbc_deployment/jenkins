@@ -1,12 +1,17 @@
 #!/bin/bash
+
+parent_path=${BASH_SOURCE%/*}
+cd "$parent_path"
+echo "Parent path of jenkins script: ${parent_path}"
+
 echo "Downloading aws credentials"
 /web/dw-tools/bin/decrypt-download-secret \
-    -f ./airflow/hbc_deployment/aws_credentials \
+    -f ./aws_credentials \
     -s airflow/.credentials \
     -v yes
 
 echo "Downloading airflow config"
-aws --region us-east-1 s3 cp s3://gilt-data-assets/airflow/airflow.cfg ./airflow/hbc_deployment/airflow.cfg
+aws --region us-east-1 s3 cp s3://gilt-data-assets/airflow/airflow.cfg ./airflow.cfg
 
 echo "Adding execute permission to scripts"
 chmod -R 750 ./scripts/

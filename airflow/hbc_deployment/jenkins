@@ -1,3 +1,12 @@
 #!/bin/bash
-echo "Pushing prod_dags/ to S3"
-aws s3 sync ./prod_dags s3://airflow-dags/ --delete --include "*.py" --exclude "*"
+echo "Adding execute permission to scripts"
+chmod -R 750 ./scripts/
+
+echo "Building / Pushing Airflow image"
+# ./ecs/build_push_image.sh
+
+echo "Registering new task definitions"
+# ./ecs/register_task_definitions.sh
+
+echo "Updating the services"
+# ./ecs/update_services.sh

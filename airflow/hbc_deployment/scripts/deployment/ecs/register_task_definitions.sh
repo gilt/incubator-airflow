@@ -16,9 +16,9 @@ aws ecs register-task-definition \
             "cpu": 0,
             "memoryReservation": 300
         }
-    ]'
+    ]' > /dev/null
 
-# airflow-worker
+# airflow-master
 aws ecs register-task-definition \
   --family airflow-master \
   --task-role-arn arn:aws:iam::326027360148:role/ecs_task_role \
@@ -41,4 +41,4 @@ aws ecs register-task-definition \
             "cpu": 0,
             "memoryReservation": 300
         }
-    ]'
+    ]' > /dev/null

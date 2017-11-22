@@ -3,7 +3,7 @@ FROM debian:jessie
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 ENV AIRFLOW_HOME /usr/local/airflow
-ENV AIRFLOW_PIP https://github.com/gilt/incubator-airflow/archive/hbc_test.zip
+ENV AIRFLOW_PIP https://github.com/gilt/incubator-airflow/archive/hbc_prod.zip
 
 # ADDING FILES
 COPY scripts/* ${AIRFLOW_HOME}/scripts/
@@ -13,7 +13,8 @@ COPY .private_aws ${AIRFLOW_HOME}/.aws/credentials
 
 # CREATING DIRECTORIES / ADDING USER
 RUN mkdir ${AIRFLOW_HOME}/logs && \
-    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && echo "airflow:airflow" | chpasswd && adduser airflow sudo
+    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && echo "airflow:airflow" | chpasswd && adduser airflow sudo && \
+    chown -R airflow:airflow ${AIRFLOW_HOME}
 
 # INSTALLS
 RUN apt-get update -yqq && \

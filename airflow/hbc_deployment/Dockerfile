@@ -9,7 +9,7 @@ ENV AIRFLOW_PIP https://github.com/gilt/incubator-airflow/archive/hbc_prod.zip
 COPY scripts/* ${AIRFLOW_HOME}/scripts/
 COPY airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 COPY crontab ${AIRFLOW_HOME}/crontab
-COPY .private_aws ${AIRFLOW_HOME}/.aws/credentials
+COPY aws_credentials ${AIRFLOW_HOME}/.aws/credentials
 
 # CREATING DIRECTORIES / ADDING USER
 RUN mkdir ${AIRFLOW_HOME}/logs && \

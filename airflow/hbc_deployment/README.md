@@ -15,14 +15,12 @@ The nodes that run the airflow jobs will be referred to as `airflow-worker`, and
 
 The workers not running legacy ELT jobs (all the `/web/dw-*` repos) are Dockerized and run on AWS ECS. Others need to be on the ELT machine matching their environment (elt.uat, elt.prod etc).
 
-## Running tests
+## Running airflow locally
 
-You can run the tests following the `README` in `/incubator-airflow`, although they will run in the CodePipeline before any deployment.
-
-You can do further testing using the `docker-compose` environment provided (uses test SQS queues, a local test DB and a test SQS queue). You will have to push your local changes to the `hbc_test` branch (no better deployment method was found yet)
+You can run airflow locally using the `docker-compose` environment provided (uses test SQS queues, a local test DB and a test SQS queue). You will have to push your local changes to the `hbc_test` branch (no better deployment method was found yet)
 ```
 # your credentials will be used locally
-cp ~/.aws/credentials ./.private_aws
+cp ~/.aws/credentials ./aws_credentials
 
 # docker uses `pip install` from `GitHub`
 # so we need to push our changes first
@@ -40,4 +38,3 @@ You will have your local Airflow webserver running on `http://192.168.99.100:808
 The deployment runs on every new push to the branch `hbc_prod`, it:
 * builds and updates the docker images for `airflow-master` and `airflow-tester`
 * updates the ECS services
-* re-installs airflow on ELT machines (that are also `airflow-worker`s)

@@ -1,5 +1,9 @@
 # HBC Deployment
 
+## Important notes
+
+Always specify a `queue` in your operators! the `default` queue is used by the local test environment so your jobs could be picked up!
+
 ## Introduction
 
 The HBC set up is as follows:
@@ -17,15 +21,19 @@ You can run the tests following the `README` in `/incubator-airflow`, although t
 
 You can do further testing using the `docker-compose` environment provided (uses test SQS queues, a local test DB and a test SQS queue). You will have to push your local changes to the `hbc_test` branch (no better deployment method was found yet)
 ```
-AWS_ACCESS_KEY_ID=<your-access-key>
-AWS_SECRET_ACCESS_KEY=<your-secret>
+# your credentials will be used locally
+cp ~/.aws/credentials ./.private_aws
+
+# docker uses `pip install` from `GitHub`
+# so we need to push our changes first
 git add -A
 git commit -m "testing new changes"
 git push origin hbc_test
+
 docker-compose up
 ```
 
-You will have your local Airflow running on
+You will have your local Airflow webserver running on `http://192.168.99.100:8080` by default.
 
 ## Deployment
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 AIRFLOW_HOME=/usr/local/airflow
-source ${AIRFLOW_HOME}/script/commons.sh
+source ${AIRFLOW_HOME}/scripts/commons.sh
 echo "Cleaning orphan dags" | addDate
 #  Deleting orphans .pyc
 ls -1 ${AIRFLOW_HOME}/dags/*.py | sort > ${AIRFLOW_HOME}/dags/py | addDate

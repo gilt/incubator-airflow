@@ -3,10 +3,7 @@ services:
   airflow-master:
     build:
       context: .
-      args:
-       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    entrypoint: /usr/local/airflow/script/entrypoint_master.sh
+    entrypoint: /usr/local/airflow/scripts/entrypoint_master.sh
     environment:
      - AIRFLOW__CELERY__CELERY_RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
      - AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER=s3://data-team-airflow-logs/airflow-master-tester
@@ -18,15 +15,12 @@ services:
   airflow-worker:
     build:
       context: .
-      args:
-       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-    entrypoint: /usr/local/airflow/script/entrypoint_worker.sh
+    entrypoint: /usr/local/airflow/scripts/entrypoint_worker.sh
     environment:
      - AIRFLOW__CELERY__CELERY_RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
      - AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER=s3://data-team-airflow-logs/airflow-worker-tester
      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@db:5432/airflow
-     - QUEUES=test_queue
+     - QUEUES=test_queue,default
   db:
    image: postgres
    environment:

@@ -1,0 +1,12 @@
+#!/bin/bash
+echo "Adding execute permission to scripts"
+chmod -R 750 ./scripts/
+
+echo "Building / Pushing Airflow image"
+# ./ecs/build_push_image.sh
+
+echo "Registering new task definitions"
+# ./ecs/register_task_definitions.sh
+
+echo "Updating the services"
+# ./ecs/update_services.sh

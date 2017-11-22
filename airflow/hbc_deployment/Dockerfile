@@ -3,20 +3,18 @@ FROM debian:jessie
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 ENV AIRFLOW_HOME /usr/local/airflow
-ENV AIRFLOW_PIP https://github.com/gilt/incubator-airflow/archive/hbc_test.zip
-
-ARG AWS_ACCESS_KEY_ID
-ARG AWS_SECRET_ACCESS_KEY
+ENV AIRFLOW_PIP https://github.com/gilt/incubator-airflow/archive/hbc_prod.zip
 
 # ADDING FILES
-COPY script/* ${AIRFLOW_HOME}/script/
+COPY scripts/* ${AIRFLOW_HOME}/scripts/
 COPY airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 COPY crontab ${AIRFLOW_HOME}/crontab
-COPY dags/* ${AIRFLOW_HOME}/dags/
+COPY .private_aws ${AIRFLOW_HOME}/.aws/credentials
 
 # CREATING DIRECTORIES / ADDING USER
-RUN mkdir ${AIRFLOW_HOME}/logs && mkdir ${AIRFLOW_HOME}/.aws && \
-    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && echo "airflow:airflow" | chpasswd && adduser airflow sudo
+RUN mkdir ${AIRFLOW_HOME}/logs && \
+    useradd -ms /bin/bash -d ${AIRFLOW_HOME} airflow && echo "airflow:airflow" | chpasswd && adduser airflow sudo && \
+    chown -R airflow:airflow ${AIRFLOW_HOME}
 
 # INSTALLS
 RUN apt-get update -yqq && \
@@ -32,9 +30,6 @@ RUN apt-get update -yqq && \
     awscli \
     pycurl \
     celery
-
-RUN chown -R airflow ${AIRFLOW_HOME} && \
-    echo "[default]\naws_access_key_id=${AWS_ACCESS_KEY_ID}\naws_secret_access_key=${AWS_SECRET_ACCESS_KEY}" > ${AIRFLOW_HOME}/.aws/credentials
 
 USER airflow
 

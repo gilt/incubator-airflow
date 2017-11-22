@@ -11,6 +11,13 @@ aws ecs register-task-definition \
             "entryPoint": ["/usr/local/airflow/entrypoint_worker.sh"],
             "mountPoints": [],
             "name": "airflow-worker",
+            "portMappings": [
+              {
+                "hostPort": 7777,
+                "containerPort": 7777,
+                "protocol": "tcp"
+              }
+            ],
             "environment": [{"name": "QUEUES", "value": "aws_batch,aws_emr,default"}],
             "image": "326027360148.dkr.ecr.us-east-1.amazonaws.com/airflow:latest",
             "cpu": 0,
@@ -29,6 +36,11 @@ aws ecs register-task-definition \
               {
                 "hostPort": 80,
                 "containerPort": 8080,
+                "protocol": "tcp"
+              },
+              {
+                "hostPort": 7777,
+                "containerPort": 7777,
                 "protocol": "tcp"
               }
             ],

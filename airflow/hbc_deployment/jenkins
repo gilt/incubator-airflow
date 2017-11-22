@@ -17,6 +17,7 @@ echo "Adding execute permission to scripts"
 chmod -R 750 ./scripts/
 
 echo "Building / Pushing Airflow image"
+eval $(aws --region us-east-1 ecr get-login)
 ./scripts/deployment/ecs/build_push_image.sh
 
 echo "Registering new task definitions"

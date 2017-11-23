@@ -8,7 +8,7 @@ aws ecs register-task-definition \
         {
             "volumesFrom": [],
             "essential": true,
-            "entryPoint": ["/usr/local/airflow/entrypoint_worker.sh"],
+            "entryPoint": ["/usr/local/airflow/scripts/entrypoint_worker.sh"],
             "mountPoints": [],
             "name": "airflow-worker",
             "portMappings": [
@@ -45,7 +45,7 @@ aws ecs register-task-definition \
               }
             ],
             "essential": true,
-            "entryPoint": ["/usr/local/airflow/entrypoint_master.sh"],
+            "entryPoint": ["/usr/local/airflow/scripts/entrypoint_master.sh"],
             "mountPoints": [],
             "name": "airflow-master",
             "environment": [],

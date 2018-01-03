@@ -1,0 +1,31 @@
+version: '3'
+services:
+  airflow-master:
+    build:
+      context: .
+      args:
+       - AIRFLOW_PIP=https://github.com/gilt/incubator-airflow/archive/hbc_test.zip
+    image: airflow:hbc_test
+    entrypoint: /usr/local/airflow/scripts/entrypoint_master.sh
+    environment:
+     - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+     - AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER=s3://data-team-airflow-logs/airflow-master-tester
+     - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@db:5432/airflow
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+  airflow-worker:
+    image: airflow:hbc_test
+    entrypoint: /usr/local/airflow/scripts/entrypoint_worker.sh
+    environment:
+     - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://airflow:airflow@db:5432/airflow
+     - AIRFLOW__CORE__REMOTE_BASE_LOG_FOLDER=s3://data-team-airflow-logs/airflow-worker-tester
+     - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql://airflow:airflow@db:5432/airflow
+     - QUEUES=test_queue,default
+  db:
+   image: postgres
+   environment:
+     - POSTGRES_DB=airflow
+     - POSTGRES_USER=airflow
+     - POSTGRES_PASSWORD=airflow

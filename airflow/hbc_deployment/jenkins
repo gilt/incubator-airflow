@@ -1,0 +1,29 @@
+#!/bin/bash
+
+parent_path=${BASH_SOURCE%/*}
+cd "$parent_path"
+echo "Parent path of jenkins script: ${parent_path}"
+
+echo "Downloading aws credentials"
+/web/dw-tools/bin/decrypt-download-secret \
+    -f ./aws_credentials \
+    -s airflow/.credentials \
+    -v yes || exit 1
+
+echo "Downloading airflow config"
+aws --region us-east-1 s3 cp s3://gilt-data-assets/airflow/airflow.cfg ./airflow.cfg || exit 1
+
+echo "Adding execute permission to scripts"
+chmod -R 750 ./scripts/
+
+echo "Building / Pushing Airflow image"
+./scripts/deployment/ecs/build_push_image.sh latest
+
+echo "Registering new task definitions"
+./scripts/deployment/ecs/register_task_definitions.sh
+
+echo "Updating the services"
+./scripts/deployment/ecs/update_services.sh
+
+echo "Restarting Airflow master"
+aws lambda invoke --function-name airflow-restart /tmp/airflow-restart.out || exit 1

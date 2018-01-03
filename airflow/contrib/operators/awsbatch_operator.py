@@ -51,15 +51,15 @@ class AWSBatchOperator(BaseOperator):
     template_fields = ('overrides',)
 
     @apply_defaults
-    def __init__(self, job_name, job_definition, queue, overrides, max_retries=288,
+    def __init__(self, job_definition, aws_batch_queue, overrides, max_retries=288,
                  aws_conn_id=None, region_name=None, **kwargs):
         super(AWSBatchOperator, self).__init__(**kwargs)
 
-        self.job_name = job_name
+        self.job_name = self.task_id
         self.aws_conn_id = aws_conn_id
         self.region_name = region_name
         self.job_definition = job_definition
-        self.queue = queue
+        self.aws_batch_queue = aws_batch_queue
         self.overrides = overrides
         self.max_retries = max_retries
 
@@ -71,7 +71,7 @@ class AWSBatchOperator(BaseOperator):
     def execute(self, context):
         self.log.info(
             'Running AWS Batch Job - Job definition: %s - on queue %s',
-            self.job_definition, self.queue
+            self.job_definition, self.aws_batch_queue
         )
         self.log.info('AWSBatchOperator overrides: %s', self.overrides)
 
@@ -83,7 +83,7 @@ class AWSBatchOperator(BaseOperator):
         try:
             response = self.client.submit_job(
                 jobName=self.job_name,
-                jobQueue=self.queue,
+                jobQueue=self.aws_batch_queue,
                 jobDefinition=self.job_definition,
                 containerOverrides=self.overrides)
 
@@ -125,6 +125,17 @@ class AWSBatchOperator(BaseOperator):
                     jobs=[self.jobId]
                 )
                 if response['jobs'][-1]['status'] in ['SUCCEEDED', 'FAILED']:
+                    log_group_name = '/aws/batch/job'
+                    cloudwatch_link_base = 'https://console.aws.amazon.com/cloudwatch/home?region={}#logEventViewer:group={};stream='.format(self.region_name, log_group_name)
+                    self.log.info('Job {}, id: {} finished with attempts:'.format(self.jobName, self.jobId))
+                    for i, attempt in enumerate(response['jobs'][-1]['attempts']):
+                        self.log.info('Attempt {}: {}'.format(i + 1, attempt))
+                        container = attempt['container']
+                        if 'logStreamName' in container and container['logStreamName'] != '':
+                            self.log.info('Full log for attempt {} available at {}'.format(i + 1, cloudwatch_link_base + container['logStreamName']))
+                        else:
+                            self.log.info('logStreamName was not found in attempt container object')
+
                     retry = False
 
                 sleep(pow(2, retries) * 100)

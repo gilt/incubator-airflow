@@ -45,7 +45,7 @@ class TestAWSBatchOperator(unittest.TestCase):
         self.batch = AWSBatchOperator(
             task_id='task',
             job_name='51455483-c62c-48ac-9b88-53a6a725baa3',
-            queue='queue',
+            aws_batch_queue='queue',
             job_definition='hello-world',
             max_retries=5,
             overrides={},

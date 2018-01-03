@@ -1,0 +1,2 @@
+*/2 * * * * /usr/local/airflow/scripts/sync_dags.sh >> /usr/local/airflow/logs/cron.log 2>&1
+*/5 * * * * /usr/local/airflow/scripts/clean_orphan_dags.sh >> /usr/local/airflow/logs/cron.log 2>&1

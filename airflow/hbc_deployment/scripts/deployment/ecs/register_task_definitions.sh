@@ -5,6 +5,7 @@
     aws ecs register-task-definition \
       --family airflow-worker \
       --task-role-arn arn:aws:iam::326027360148:role/ecs_task_role \
+      --region us-east-1 \
       --container-definitions '[
             {
                 "volumesFrom": [],
@@ -14,8 +15,8 @@
                 "name": "airflow-worker",
                 "portMappings": [
                   {
-                    "hostPort": 7777,
-                    "containerPort": 7777,
+                    "hostPort": 8793,
+                    "containerPort": 8793,
                     "protocol": "tcp"
                   }
                 ],
@@ -30,6 +31,7 @@
     aws ecs register-task-definition \
       --family airflow-master \
       --task-role-arn arn:aws:iam::326027360148:role/ecs_task_role \
+      --region us-east-1 \
       --container-definitions '[
             {
                 "volumesFrom": [],
@@ -40,8 +42,8 @@
                     "protocol": "tcp"
                   },
                   {
-                    "hostPort": 7777,
-                    "containerPort": 7777,
+                    "hostPort": 8793,
+                    "containerPort": 8793,
                     "protocol": "tcp"
                   }
                 ],

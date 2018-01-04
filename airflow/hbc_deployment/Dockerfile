@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 ENV AIRFLOW_HOME /usr/local/airflow
 
-ARG AIRFLOW_PIP=https://github.com/gilt/incubator-airflow/archive/hbc_prod.zip
+ARG AIRFLOW_PIP=https://github.com/gilt/incubator-airflow/archive/hbc_test.zip
 
 # ADDING FILES
 COPY scripts/* ${AIRFLOW_HOME}/scripts/

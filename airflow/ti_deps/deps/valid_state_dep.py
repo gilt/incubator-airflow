@@ -49,11 +49,10 @@ class ValidStateDep(BaseTIDep):
                 reason="Context specified that state should be ignored.")
             return
 
-        if ti.state in self._valid_states:
-            yield self._passing_status(reason="Task state {} was valid.".format(ti.state))
-            return
+        yield self._passing_status(reason="Task state {} was valid.".format(ti.state))
+        return
 
-        yield self._failing_status(
-            reason="Task is in the '{0}' state which is not a valid state for "
-                   "execution. The task must be cleared in order to be run.".format(
-                       ti.state))
+        #yield self._failing_status(
+        #    reason="Task is in the '{0}' state which is not a valid state for "
+        #           "execution. The task must be cleared in order to be run.".format(
+        #               ti.state))

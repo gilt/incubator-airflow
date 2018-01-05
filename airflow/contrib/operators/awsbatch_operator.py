@@ -116,11 +116,11 @@ class AWSBatchOperator(BaseOperator):
             waiter.config.max_attempts = sys.maxsize  # timeout is managed by airflow
             waiter.wait(jobs=[self.jobId])
         except ValueError:
-            # If waiter not available use expo
+            # If waiter not available use 5 seconds
             retry = True
-            retries = 0
 
-            while retries < self.max_retries and retry:
+            while retry:
+                sleep(5)
                 response = self.client.describe_jobs(
                     jobs=[self.jobId]
                 )
@@ -138,9 +138,6 @@ class AWSBatchOperator(BaseOperator):
 
                     retry = False
 
-                if retry:
-                    sleep(pow(2, retries) * 100)
-                    retries += 1
 
     def _check_success_task(self):
         response = self.client.describe_jobs(
@@ -148,18 +145,17 @@ class AWSBatchOperator(BaseOperator):
         )
 
         self.log.info('AWS Batch stopped, check status: %s', response)
+        
         if len(response.get('jobs')) < 1:
             raise AirflowException('No job found for {}'.format(response))
 
-        for job in response['jobs']:
-            if 'attempts' in job:
-                containers = job['attempts']
-                for container in containers:
-                    if job['status'] == 'FAILED' or container['attempts']['exitCode'] != 0:
-                        print("@@@@")
-                        raise AirflowException('This containers encounter an error during execution {}'.format(job))
-            elif job['status'] is not 'SUCCEEDED':
-                raise AirflowException('This task is still pending {}'.format(job['status']))
+        if response['jobs'][-1]['status'] == 'FAILED':
+            print("@@@@")
+            raise AirflowException('This container encountered an error during execution {}'.format(response['jobs'][-1]))
+
+        elif response['jobs'][-1]['status'] is not 'SUCCEEDED':
+            raise AirflowException('This task is still pending {}'.format(job['status']))
+
 
     def get_hook(self):
         return AwsHook(

@@ -149,12 +149,13 @@ class AWSBatchOperator(BaseOperator):
         if len(response.get('jobs')) < 1:
             raise AirflowException('No job found for {}'.format(response))
 
-        if response['jobs'][-1]['status'] == 'FAILED':
+        status = response['jobs'][-1]['status']
+        if status == 'FAILED':
             print("@@@@")
             raise AirflowException('This container encountered an error during execution {}'.format(response['jobs'][-1]))
 
-        elif response['jobs'][-1]['status'] is not 'SUCCEEDED':
-            raise AirflowException('This task is still pending {}'.format(response['jobs'][-1]['status']))
+        elif status != 'SUCCEEDED':
+            raise AirflowException('This task is still pending {}'.format(status))
 
 
     def get_hook(self):

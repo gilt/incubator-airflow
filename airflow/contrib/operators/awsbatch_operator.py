@@ -120,7 +120,7 @@ class AWSBatchOperator(BaseOperator):
             retry = True
             retries = 0
 
-            while retries < self.max_retries or retry:
+            while retries < self.max_retries and retry:
                 response = self.client.describe_jobs(
                     jobs=[self.jobId]
                 )
@@ -138,8 +138,9 @@ class AWSBatchOperator(BaseOperator):
 
                     retry = False
 
-                sleep(pow(2, retries) * 100)
-                retries += 1
+                if retry:
+                    sleep(pow(2, retries) * 100)
+                    retries += 1
 
     def _check_success_task(self):
         response = self.client.describe_jobs(

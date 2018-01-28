@@ -10,7 +10,6 @@ ARG AIRFLOW_PIP=https://github.com/gilt/incubator-airflow/archive/hbc_test.zip
 COPY scripts/* ${AIRFLOW_HOME}/scripts/
 COPY airflow.cfg ${AIRFLOW_HOME}/airflow.cfg
 COPY crontab ${AIRFLOW_HOME}/crontab
-COPY aws_credentials ${AIRFLOW_HOME}/.aws/credentials
 
 # CREATING DIRECTORIES / ADDING USER
 RUN mkdir ${AIRFLOW_HOME}/logs && \

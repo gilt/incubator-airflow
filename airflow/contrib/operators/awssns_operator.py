@@ -49,8 +49,8 @@ class AWSSnsOperator(BaseOperator):
     arn = None
 
     @apply_defaults
-    def __init__(self, message, topic_name=None, target_arn=None, phone_number=None, subject=None,
-                 message_structure=None, message_attributes=None, aws_conn_id=None,
+    def __init__(self, message, topic_name='', target_arn='', phone_number='', subject='',
+                 message_structure='', message_attributes={}, aws_conn_id=None,
                  region_name=None, **kwargs):
         super(AWSSnsOperator, self).__init__(**kwargs)
 

@@ -21,8 +21,9 @@ You can run airflow locally using the `docker-compose` environment provided (use
 
 The version of Airflow on the Github branch `hbc_test` will be used to build the image.
 ```
-# your credentials will be used locally
-cp ~/.aws/credentials ./aws_credentials
+# copy dags into $HOME/airflow/dags/
+mkdir -p $HOME/airflow $HOME/airflow/dags
+cp test_dags/* $HOME/airflow/dags/
 
 # docker uses `pip install` from `GitHub`
 # so we need to push our changes first
@@ -37,6 +38,8 @@ docker-compose up
 You will have your local Airflow webserver running on `http://192.168.99.100:8080` by default.
 
 ## Deployment
+
+Push the Airflow config to `s3://gilt-data-assets/airflow/airflow.cfg` (will be pulled down by Jenkins when building)
 
 The deployment runs on every new push to the branch `hbc_prod`, it:
 * builds and updates the docker image

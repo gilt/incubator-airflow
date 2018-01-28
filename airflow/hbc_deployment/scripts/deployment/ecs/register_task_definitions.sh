@@ -4,7 +4,7 @@
     # airflow-worker
     aws ecs register-task-definition \
       --family airflow-worker \
-      --task-role-arn arn:aws:iam::326027360148:role/ecs_task_role \
+      --task-role-arn arn:aws:iam::326027360148:role/airflow_role \
       --region us-east-1 \
       --container-definitions '[
             {
@@ -30,7 +30,7 @@
     # airflow-master
     aws ecs register-task-definition \
       --family airflow-master \
-      --task-role-arn arn:aws:iam::326027360148:role/ecs_task_role \
+      --task-role-arn arn:aws:iam::326027360148:role/airflow_role \
       --region us-east-1 \
       --container-definitions '[
             {

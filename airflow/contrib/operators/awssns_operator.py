@@ -49,8 +49,8 @@ class AWSSnsOperator(BaseOperator):
     arn = None
 
     @apply_defaults
-    def __init__(self, message, topic_name='', target_arn='', phone_number='', subject='',
-                 message_structure='', message_attributes={}, aws_conn_id=None,
+    def __init__(self, message, topic_name=None, target_arn=None, phone_number=None, subject=None,
+                 message_structure=None, message_attributes=None, aws_conn_id=None,
                  region_name=None, **kwargs):
         super(AWSSnsOperator, self).__init__(**kwargs)
 
@@ -73,6 +73,8 @@ class AWSSnsOperator(BaseOperator):
 
     def execute(self, context):
         try:
+            params = {'Message': self.message}
+
             topic_arn = None
             if self.topic_name:
                 self.log.info(
@@ -87,22 +89,27 @@ class AWSSnsOperator(BaseOperator):
                     'Topic arn: %s',
                     topic_arn['TopicArn']
                 )
+                params['TopicArn'] = topic_arn['TopicArn']
+
+            if self.target_arn:
+                params['TargetArn'] = self.target_arn
+            if self.phone_number:
+                params['PhoneNumber'] = self.phone_number
+            if self.subject:
+                params['Subject'] = self.subject
+            if self.message_structure:
+                params['MessageStructure'] = self.message_structure
+            if self.message_attributes:
+                params['MessageAttributes'] = self.message_attributes
 
             self.log.info('Sending an SNS notification')
             self.log.info(
-                'Message: %s, TopicName: %s, TargetArn: %s, PhoneNumber: %s, Subject: %s, MessageStructure: %s, MessageAttributes: %s',
-                self.message, self.topic_name, self.target_arn, self.phone_number, self.subject, self.message_structure, self.message_attributes
+                'Parameters: %s',
+                self.params
             )
 
-            response = self.client.publish(
-                TopicArn=topic_arn['TopicArn'],
-                TargetArn=self.target_arn,
-                PhoneNumber=self.phone_number,
-                Message=self.message,
-                Subject=self.subject,
-                MessageStructure=self.message_structure,
-                MessageAttributes=self.message_attributes
-            )
+            response = self.client.publish(params)
+
             self.log.info(
                 'Message sent successfully, with ID: %s',
                 response['MessageId']

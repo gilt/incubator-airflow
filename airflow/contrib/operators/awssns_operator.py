@@ -108,8 +108,7 @@ class AWSSnsOperator(BaseOperator):
                 self.params
             )
 
-            response = self.client.publish(params)
-
+            response = self.client.publish(**params)
             self.log.info(
                 'Message sent successfully, with ID: %s',
                 response['MessageId']

@@ -33,6 +33,8 @@ dag = DAG(dag_id='test_lambda_dag', default_args=default_args)
 
 test_task = AWSLambdaOperator(
     task_id='test_task',
-    bash_command='echo "Hello world!"',
+    function_name='trigger_data_pipelines',
+    payload='["test_trigger"]',
+    region_name='us-east-1',
     queue='test_queue',
     dag=dag)

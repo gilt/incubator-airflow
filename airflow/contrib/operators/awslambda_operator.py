@@ -33,6 +33,9 @@ class AWSLambdaOperator(BaseOperator):
     :type qualifier: str
     :param invocation_type: AWS Lambda Invocation Type (RequestResponse, Event etc)
     :type invocation_type: str
+    :param aws_conn_id: connection id of AWS credentials / region name. If None,
+           credential boto3 strategy will be used (http://boto3.readthedocs.io/en/latest/guide/configuration.html).
+    :type aws_conn_id: str
     """
 
     ui_color = '#c3dae0'
@@ -41,13 +44,14 @@ class AWSLambdaOperator(BaseOperator):
 
     @apply_defaults
     def __init__(self, function_name, payload='', region_name=None, log_type='None', qualifier='$LATEST',
-                 invocation_type='RequestResponse', *args, **kwargs):
+                 invocation_type='RequestResponse', aws_conn_id=None, *args, **kwargs):
         self.function_name = function_name
         self.payload = payload
         self.region_name = region_name
         self.log_type = log_type
         self.invocation_type = invocation_type
         self.qualifier = qualifier
+        self.aws_conn_id = aws_conn_id
         self.hook = self.get_hook()
         self.client = self.hook.get_client_type(
             'lambda',

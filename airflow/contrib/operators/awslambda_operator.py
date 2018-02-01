@@ -57,7 +57,7 @@ class AWSLambdaOperator(BaseOperator):
             'lambda',
             region_name=self.region_name
         )
-        super(AwsLambdaOperator, self).__init__(*args, **kwargs)
+        super(AWSLambdaOperator, self).__init__(*args, **kwargs)
 
     def execute(self, context):
         """

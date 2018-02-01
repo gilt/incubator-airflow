@@ -25,7 +25,7 @@ class AWSLambdaOperator(BaseOperator):
 
     :param function_name: AWS Lambda Function Name
     :type function_name: str
-    :param region_name: AWS Region Name (example: us-west-2)
+    :param region_name: AWS Region Name (example: us-east-1)
     :type region_name: str
     :param log_type: Tail Invocation Request
     :type log_type: str

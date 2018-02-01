@@ -16,6 +16,7 @@ import airflow
 from airflow.contrib.operators.awslambda_operator import AWSLambdaOperator
 from airflow.models import DAG
 from datetime import timedelta
+import json
 
 
 default_args = {
@@ -31,10 +32,12 @@ default_args = {
 
 dag = DAG(dag_id='test_lambda_dag', default_args=default_args)
 
+#  pipelines: test_trigger -> df-0246685TIX8XD6PW3QG
+pipelines_to_trigger = {'pipelines': ["df-0246685TIX8XD6PW3QG"]}
 test_task = AWSLambdaOperator(
     task_id='test_task',
     function_name='trigger_data_pipelines',
-    payload='["test_trigger"]',
+    payload=json.dumps(pipelines_to_trigger, default=lambda o: o.__dict__),
     region_name='us-east-1',
     queue='test_queue',
     dag=dag)
